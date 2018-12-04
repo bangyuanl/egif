@@ -21,21 +21,21 @@ function [q,beta] = egif(I, p, r, eps)
 eps0 = (0.001)^2;
 
 [hei, wid] = size(I);
-N = luboxfilter(ones(hei, wid), r); % the size of each local patch; N=(2r+1)^2 except for boundary pixels.
+N = boxfilter(ones(hei, wid), r); % the size of each local patch; N=(2r+1)^2 except for boundary pixels.
 
-mean_I = luboxfilter(I, r) ./ N;
-mean_p = luboxfilter(p, r) ./ N;
-mean_Ip = luboxfilter(I.*p, r) ./ N;
+mean_I = boxfilter(I, r) ./ N;
+mean_p = boxfilter(p, r) ./ N;
+mean_Ip = boxfilter(I.*p, r) ./ N;
 cov_Ip = mean_Ip - mean_I .* mean_p; % this is the covariance of (I, p) in each local patch.
 
-mean_II = luboxfilter(I.*I, r) ./ N;
+mean_II = boxfilter(I.*I, r) ./ N;
 var_II = mean_II - mean_I .* mean_I;
 
 a = cov_Ip ./ ( var_II + (eps .* mean2(var_II)) + eps0 ); % eqn.(13)
 b = mean_p - a .* mean_I;
 
-mean_a = luboxfilter(a, r) ./ N;
-mean_b = luboxfilter(b, r) ./ N;
+mean_a = boxfilter(a, r) ./ N;
+mean_b = boxfilter(b, r) ./ N;
 
 gamma = 1.0;
 beta = ( ( mean_a ./ (1-mean_a)) ) .^ gamma; % eqn.(27)
